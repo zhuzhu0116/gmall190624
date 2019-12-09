@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.gmall0624.manage.mapper.SpuSaleAttrMapper">
+    <!--查询之后返回的映射结果集
+        id:表示resultMap的唯一性
+        type:该结果集返回的数据类型
+        autoMapping="true" 自动映射 数据库的字段
+        -->
+    <!--
+    id:主键
+    property:表示实体类的属性名
+    column:通过sql 语句查询出来的字段名称
+-->
+    <resultMap id="spuSaleAttrMap" type="com.atguigu.gmall0624.bean.SpuSaleAttr"  autoMapping="true"   >
+        <!--
+                result:表示非主键字段
+            -->
+        <!-- <result property="attrName" column="attr_name"></result>-->
+        <!--private List<BaseAttrValue> attrValueList; 非数据库字段 1：n-->
+        <!--配置mybtis 的 1对多关系
+            ofType:表示集合的返回值类型
+            如果碰到重名的，则需要起个别名。
+        -->
+        <id property="id" column="id"></id>
+        <collection property="spuSaleAttrValueList" ofType="com.atguigu.gmall0624.bean.SpuSaleAttrValue" autoMapping="true"   >
+            <id property="id" column="sale_attr_value_id"  ></id>
+
+        </collection>
+
+    </resultMap>
+
+
+    <select id="selectSpuSaleAttrList" resultMap="spuSaleAttrMap"  >
+        select sa.id ,sa.spu_id, sa.sale_attr_name,sa.sale_attr_id,
+        sv.id sale_attr_value_id,
+        sv.sale_attr_value_name
+        from spu_sale_attr sa inner join spu_sale_attr_value  sv
+        on  sa.spu_id=sv.spu_id and sa.sale_attr_id=sv.sale_attr_id
+        where  sa.spu_id=#{0}
+    </select>
+</mapper>

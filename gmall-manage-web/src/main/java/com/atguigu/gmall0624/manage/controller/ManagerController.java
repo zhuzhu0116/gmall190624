@@ -35,8 +35,8 @@ public class ManagerController {
 
     //localhost:8082/attrInfoList?catalog3Id=61
     @RequestMapping("attrInfoList")
-    public List<BaseAttrInfo> getAttrInfoList(BaseAttrInfo baseAttrInfo){
-        return manageService.getAttrInfoList(baseAttrInfo);
+    public List<BaseAttrInfo> getAttrInfoList(BaseAttrInfo baseAttrInfo,String catalog3Id){
+        return manageService.getAttrInfoList(catalog3Id);
     }
 
     //localhost:8082/saveAttrInfo 403

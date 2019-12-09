@@ -33,6 +33,19 @@ public class ManageServiceImpl implements ManageService {
     private SpuSaleAttrValueMapper spuSaleAttrValueMapper;
     @Autowired
     private SpuImageMapper spuImageMapper;
+
+    @Autowired
+    private SkuInfoMapper skuInfoMapper;
+
+    @Autowired
+    private SkuImageMapper skuImageMapper;
+
+    @Autowired
+    private SkuSaleAttrValueMapper skuSaleAttrValueMapper;
+
+    @Autowired
+    private SkuAttrValueMapper skuAttrValueMapper;
+
     @Override
     public List<BaseCatalog1> getCatalog1() {
         return baseCatalog1Mapper.selectAll();
@@ -51,6 +64,13 @@ public class ManageServiceImpl implements ManageService {
     @Override
     public List<BaseAttrInfo> getAttrInfoList(BaseAttrInfo baseAttrInfo) {
         return baseAttrInfoMapper.select(baseAttrInfo);
+    }
+
+    @Override
+    public List<BaseAttrInfo> getAttrInfoList(String catalog3Id) {
+
+
+        return baseAttrInfoMapper.selectBaseAttrInfoListByCatalog3Id(catalog3Id);
     }
 
     @Override
@@ -99,6 +119,7 @@ public class ManageServiceImpl implements ManageService {
     }
 
     @Override
+    @Transactional
     public void saveSpuInfo(SpuInfo spuInfo) {
         // 什么情况下是保存，什么情况下是更新 spuInfo
         if (spuInfo.getId()==null || spuInfo.getId().length()==0){
@@ -106,7 +127,15 @@ public class ManageServiceImpl implements ManageService {
             spuInfo.setId(null);
             spuInfoMapper.insertSelective(spuInfo);
             //TODO修改
+        }else{
+            spuInfoMapper.updateByPrimaryKeySelective(spuInfo);
         }
+        //先清空
+        SpuImage spuImage1 = new SpuImage();
+        spuImage1.setSpuId(spuInfo.getId());
+        spuImageMapper.delete(spuImage1);
+
+
         List<SpuImage> spuImageList = spuInfo.getSpuImageList();
         if(this.exitIsNotEmpty(spuImageList)){
             for (SpuImage spuImage : spuImageList) {
@@ -115,8 +144,15 @@ public class ManageServiceImpl implements ManageService {
                 spuImageMapper.insertSelective(spuImage);
             }
         }
+        SpuSaleAttrValue spuSaleAttrValue1 = new SpuSaleAttrValue();
+        spuSaleAttrValue1.setSpuId(spuInfo.getId());
+        spuSaleAttrValueMapper.delete(spuSaleAttrValue1);
 
-
+        //先清空
+        SpuSaleAttr spuSaleAttr1 = new SpuSaleAttr();
+        spuSaleAttr1.setSpuId(spuInfo.getId());
+        spuSaleAttrMapper.delete(spuSaleAttr1);
+        //先清空
 
         List<SpuSaleAttr> spuSaleAttrList = spuInfo.getSpuSaleAttrList();
         if(this.exitIsNotEmpty(spuSaleAttrList)){
@@ -135,6 +171,47 @@ public class ManageServiceImpl implements ManageService {
                 }
             }
         }
+
+    }
+
+    @Override
+    public List<SpuImage> getSpuImageList(SpuImage spuImage) {
+
+        return spuImageMapper.select(spuImage);
+    }
+
+    @Override
+    public List<SpuSaleAttr> getSpuSaleAttrList(String spuId) {
+        return spuSaleAttrMapper.selectSpuSaleAttrList(spuId);
+    }
+
+    @Override
+    @Transactional
+    public void saveSkuInfo(SkuInfo skuInfo) {
+        skuInfoMapper.insertSelective(skuInfo);
+        List<SkuImage> skuImageList = skuInfo.getSkuImageList();
+
+        if(exitIsNotEmpty(skuImageList)){
+            for (SkuImage skuImage : skuImageList) {
+                skuImage.setSkuId(skuInfo.getId());
+                skuImageMapper.insertSelective(skuImage);
+            }
+        }
+
+        if(exitIsNotEmpty(skuInfo.getSkuAttrValueList())){
+            for (SkuAttrValue skuAttrValue : skuInfo.getSkuAttrValueList()) {
+                skuAttrValue.setSkuId(skuInfo.getId());
+                skuAttrValueMapper.insertSelective(skuAttrValue);
+            }
+        }
+
+        if(exitIsNotEmpty(skuInfo.getSkuSaleAttrValueList())){
+            for (SkuSaleAttrValue skuSaleAttrValue : skuInfo.getSkuSaleAttrValueList()) {
+                skuSaleAttrValue.setSkuId(skuInfo.getId());
+                skuSaleAttrValueMapper.insertSelective(skuSaleAttrValue);
+            }
+        }
+
 
     }
 

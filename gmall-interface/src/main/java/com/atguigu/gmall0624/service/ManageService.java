@@ -23,6 +23,8 @@ public interface ManageService {
 
     List<BaseAttrInfo> getAttrInfoList(BaseAttrInfo baseAttrInfo);
 
+    List<BaseAttrInfo> getAttrInfoList(String catalog3Id);
+
     void saveAttrInfo(BaseAttrInfo baseAttrInfo);
 
     BaseAttrInfo getAttrInfo(String attrId);
@@ -40,5 +42,11 @@ public interface ManageService {
     List<BaseSaleAttr> getBaseSaleAttrList();
 
     void saveSpuInfo(SpuInfo spuInfo);
+
+    List<SpuImage> getSpuImageList(SpuImage spuImage);
+
+    List<SpuSaleAttr> getSpuSaleAttrList(String spuId);
+
+    void saveSkuInfo(SkuInfo skuInfo);
 
 }
