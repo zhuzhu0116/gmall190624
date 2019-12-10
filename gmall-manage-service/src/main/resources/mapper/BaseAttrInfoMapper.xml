@@ -22,6 +22,7 @@
             如果碰到重名的，则需要起个别名。
         -->
         <id property="id" column="id"></id>
+
         <collection property="attrValueList" ofType="com.atguigu.gmall0624.bean.BaseAttrValue" autoMapping="true"   >
             <id property="id" column="attr_value_id"  ></id>
 

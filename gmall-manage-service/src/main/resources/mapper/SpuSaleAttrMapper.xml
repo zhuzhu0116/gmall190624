@@ -38,4 +38,19 @@
         on  sa.spu_id=sv.spu_id and sa.sale_attr_id=sv.sale_attr_id
         where  sa.spu_id=#{0}
     </select>
+
+    <select id="getSpuSaleAttrListCheckBySku" resultMap="spuSaleAttrMap">
+    SELECT
+psa.id ,psa.spu_id, psa.sale_attr_name,psa.sale_attr_id,
+psav.id sale_attr_value_id,
+psav.sale_attr_value_name,
+ksav.sku_id,
+IF(ksav.sku_id IS NULL,0,1)  is_checked
+from spu_sale_attr psa INNER JOIN spu_sale_attr_value psav
+ON psa.spu_id = psav.spu_id and psa.sale_attr_id = psav.sale_attr_id
+LEFT JOIN sku_sale_attr_value ksav on ksav.sale_attr_id = psa.sale_attr_id
+and ksav.sale_attr_value_id = psav.id and ksav.sku_id = #{arg0}
+where psa.spu_id = #{arg1}
+ORDER BY psav.sale_attr_id,psav.id
+    </select>
 </mapper>
